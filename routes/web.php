@@ -22,14 +22,19 @@ Route::get('logout', function (){
     return redirect('/');
 });
 
-Route::group(['middleware'=> 'auth'], function(){
-    Route::get('dashboard', function (){
-        echo 'Welcome dashboard <br>';
-        echo '<a href="/logout"> Logout </a>';
-    });
+Route::group(['middleware'=> ['auth','verified']], function(){
+    Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+
+    Route::redirect('settings', 'settings/profile')->name('settings');
+    Route::get('settings/profile', 'DashboardController@profile')->name('profile');
+    Route::post('settings/profile', 'DashboardController@profile_save')->name('profile.save');
+    Route::get('settings/security', 'DashboardController@security')->name('security');
+    Route::post('settings/security', 'DashboardController@security_save')->name('security.save');
+    Route::get('settings/billing', 'BillingController@billing')->name('billing');
+    Route::post('settings/billing', 'BillingController@billing_save')->name('billing.save');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
