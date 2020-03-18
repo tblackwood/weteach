@@ -22,7 +22,7 @@ Route::get('logout', function (){
     return redirect('/');
 });
 
-Route::group(['middleware'=> ['auth','verified']], function(){
+Route::group(['middleware'=> ['auth','verified','subscriber']], function(){
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 
     Route::redirect('settings', 'settings/profile')->name('settings');
@@ -31,9 +31,18 @@ Route::group(['middleware'=> ['auth','verified']], function(){
     Route::get('settings/security', 'DashboardController@security')->name('security');
     Route::post('settings/security', 'DashboardController@security_save')->name('security.save');
     Route::post('settings/billing/switch_plan', 'BillingController@switch_plan')->name('billing.switch_plan');
+    Route::get('settings/invoices', 'DashboardController@invoices')->name('invoices');
+    Route::get('settings/invoices/download/{invoice}', 'DashboardController@invoices_download')->name('invoices.download');
+    Route::get('settings/billing/cancel', 'BillingController@cancel')->name('cancel');
+    Route::get('settings/billing/resume', 'BillingController@resume')->name('resume');
+
+    Route::view('support','support')->name('support');
+    Route::post('support', 'SupportController@send')->name('support.send');
+});
+
+Route::group(['middleware'=> ['auth','verified']], function(){
     Route::get('settings/billing', 'BillingController@billing')->name('billing');
     Route::post('settings/billing', 'BillingController@billing_save')->name('billing.save');
-
 });
 
 Auth::routes(['verify' => true]);

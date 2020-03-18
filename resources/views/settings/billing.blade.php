@@ -1,6 +1,6 @@
 @extends('app')
 
-@section('title', 'Dashboard')
+@section('title', 'Billing Settings')
 
 @section('content')
 
@@ -43,12 +43,33 @@
                                     <span class="text-xs text-gray-700">{{ auth()->user()->plan->description }}</span>
                                 </div>
                             </div>
-
+                            @if (auth()->user()->subscription('main')->onGracePeriod())
+                                <div class="bg-orange-500 px-5 py-2 rounded-lg text-white mt-4 text-xs">You have cancelled your account and your account is still active until {{ auth()->user()->subscription('main')->ends_at->toFormattedDateString() }}</div>
+                                <div class="flex justify-end items-end mt-4">
+                                    <p class="text-sm text-gray-600 mr-2">or, you can </p>
+                                    <a href="{{ route('resume') }}" class="text-green-500 text-sm font-medium underline">Resume Your Subscription</a>
+                                </div>
+                            @else
+                                <div class="flex justify-between items-center mt-4">
+                                    <div id="switch-plan-btn" class="bg-gray-300 text-gray-600 text-sm font-medium px-6 py-2 rounded uppercase cursor-pointer inline-block">
+                                        Switch My Plan
+                                    </div>
+                                    <a href="{{ route('cancel') }}" class="text-red-500 text-sm underline">Cancel Subscription</a>
+                                </div>
+                            @endif
                         </div>
                         <hr class="border-gray-300">
                         <div class="py-8 px-16">
                             <div class="text-xs text-blue-600">Your default payment method ends in {{ auth()->user()->card_last_four }}</div>
                             <div class="text-xs text-gray-500">To update your default payment method, add a new card below:</div>
+                        </div>
+                        <hr class="border-gray-300">
+                    @endif
+
+                    @if(auth()->user()->onTrial())
+                        <div class="py-8 px-16">
+                            @include('partials.trial_notification')
+                            <p class="text-sm text-gray-500 mt-2">Subscribe to a Plan Below:</p>
                         </div>
                         <hr class="border-gray-300">
                     @endif

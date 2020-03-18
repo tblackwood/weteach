@@ -1,12 +1,12 @@
 @extends('app')
 
-@section('title', 'Dashboard')
+@section('title', 'Security Settings')
 
 @section('content')
 
 <div class="bg-gray-200 min-h-screen pb-24">
     @include('partials.dashboard-header')
-    
+
     <div class="container mx-auto max-w-3xl mt-8">
 
         <h1 class="text-2xl font-bold text-gray-700 px-6 md:px-0">Security Settings</h1>
