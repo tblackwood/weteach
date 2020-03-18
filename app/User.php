@@ -5,10 +5,13 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
+use Laravel\Cashier\Billable;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use Notifiable, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,4 +39,16 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getPhotoAttribute($value){
+        if(is_null($value)) {
+            return url('/img/default.png');
+        }else{
+            return Storage::url('public/images/user/' . $value);
+        }
+    }
+
+    public function plan(){
+        return $this->belongsTo('App\Plan');
+    }
 }

@@ -11,14 +11,19 @@
     <div class="hidden lg:flex lg:items-center lg:w-auto w-full" id="menu">
         <nav>
             <ul class="lg:flex items-center justify-between text-sm font-medium text-gray-700 pt-4 lg:pt-0">
-                <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent border-pink-500 text-pink-500 font-bold" href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent text-gray-600 hover:text-gray-900" href="#">Courses</a></li>
-                <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent text-gray-600 hover:text-gray-900" href="#">Users</a></li>
+                <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent @if(Request::is('dashboard')) {{ 'border-pink-500 text-pink-500 font-bold' }} @else {{ 'text-gray-600 hover:text-gray-900' }} @endif" href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent @if(Request::is('courses')) {{ 'border-pink-500 text-pink-500 font-bold' }} @else {{ 'text-gray-600 hover:text-gray-900' }} @endif" href="#">Courses</a></li>
+                <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent @if(Request::is('users')) {{ 'border-pink-500 text-pink-500 font-bold' }} @else {{ 'text-gray-600 hover:text-gray-900' }} @endif" href="#">Users</a></li>
                 <li><a class="lg:p-4 py-3 px-0 block border-b-2 border-transparent text-gray-600 hover:text-gray-900 lg:mb-0 mb-2" href="#">Support</a></li>
             </ul>
         </nav>
-        <a href="#" class="lg:ml-4 flex items-center justify-start lg:mb-0 mb-4 pointer-cursor" id="userdropdown">
-            <img class="rounded-full w-10 h-10 border-2 border-transparent hover:border-pink-400 ignore-body-click" src="/img/default.png" alt="avatar">
+        <a href="#" class="group lg:ml-4 flex items-center justify-start lg:mb-0 mb-4 pointer-cursor border-l border-gray-300 pl-6" id="userdropdown">
+            <p class="font-bold text-xs pr-2 text-gray-700 text-right ignore-body-click">{{ auth()->user()->name }}<br>
+
+                    <span class="text-xs text-indigo-600 ignore-body-click">{{ ucfirst(auth()->user()->plan->name) }} Plan</span>
+
+            </p>
+            <img class="rounded-full w-10 h-10 border-2 border-gray-300 group-hover:border-pink-400 ignore-body-click" src="{{ auth()->user()->photo }}" alt="avatar">
         </a>
         <div id="usermenu" class="absolute lg:mt-12 pt-1 z-40 left-0 lg:left-auto lg:right-0 lg:top-0 invisible lg:w-auto w-full">
             <div class="bg-white shadow-xl lg:px-8 px-6 lg:py-4 pb-4 pt-0 rounded lg:mr-3 rounded-t-none">
@@ -30,3 +35,26 @@
     </div>
 
 </header>
+
+@if ($errors->any())
+    <div class="container mx-auto max-w-3xl mt-8">
+        <div class="bg-red-500 text-white p-4 rounded-lg">
+            <p class="font-bold">Please fix the following errors</p>
+            <ul class="list-disc ml-8">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+@endif
+
+@if (session('alert'))
+    <div class="container mx-auto max-w-3xl mt-8">
+        @php $alert_type = session('alert_type'); @endphp
+        <div class="@if($alert_type == 'info'){{ 'bg-blue-400' }}@elseif($alert_type == 'success'){{ 'bg-green-400' }}@elseif($alert_type == 'error'){{ 'bg-red-400' }}@elseif($alert_type == 'warning'){{ 'bg-orange-400' }}@endif text-white p-4 rounded-lg" role="alert">
+            <p class="font-bold">{{ ucfirst(session('alert_type')) }}</p>
+            <p>{{ session('alert') }}</p>
+        </div>
+    </div>
+@endif
