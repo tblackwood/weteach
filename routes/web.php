@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
     return view('home');
 });
@@ -23,8 +24,12 @@ Route::get('logout', function (){
 });
 
 Route::group(['middleware'=> ['auth','verified','subscriber']], function(){
-    Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+    // Course Routes
+    Route::get('courses', 'CourseController@courses')->name('courses');
+    Route::get('courses/{subdomain}', 'CourseController@course')->name('course');
+    // Dashboard routes
 
+    Route::get('dashboard', 'DashboardController@index')->name('dashboard');
     Route::redirect('settings', 'settings/profile')->name('settings');
     Route::get('settings/profile', 'DashboardController@profile')->name('profile');
     Route::post('settings/profile', 'DashboardController@profile_save')->name('profile.save');
@@ -38,7 +43,13 @@ Route::group(['middleware'=> ['auth','verified','subscriber']], function(){
 
     Route::view('support','support')->name('support');
     Route::post('support', 'SupportController@send')->name('support.send');
+
+    Route::get('announcements', 'AnnouncementController@index')->name('announcements');
+    Route::get('announcements/unread', 'AnnouncementController@unread')->name('announcements.unread');
+    Route::get('announcement/{id}', 'AnnouncementController@announcement')->name('announcement');
+
 });
+
 
 Route::group(['middleware'=> ['auth','verified']], function(){
     Route::get('settings/billing', 'BillingController@billing')->name('billing');
@@ -47,5 +58,14 @@ Route::group(['middleware'=> ['auth','verified']], function(){
 
 Auth::routes(['verify' => true]);
 
+// OAuth Providers
+Route::get('login/github', 'Auth\LoginController@redirectToGithubProvider');
+Route::get('login/github/callback', 'Auth\LoginController@handleGithubProviderCallback');
+Route::get('login/google', 'Auth\LoginController@redirectToGoogleProvider');
+Route::get('login/google/callback', 'Auth\LoginController@handleGoogleProviderCallback');
+Route::get('login/facebook', 'Auth\LoginController@redirectToFacebookProvider');
+Route::get('login/facebook/callback', 'Auth\LoginController@handleFacebookProviderCallback');
+
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('p/{slug}', 'PageController@page')->name('page');
 

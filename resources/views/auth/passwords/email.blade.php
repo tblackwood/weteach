@@ -39,7 +39,7 @@
 
                     <div class="flex flex-wrap items-center">
                         <div class="w-full sm:flex-1">
-                            <input type="submit" value="Send Password Reset Link" class="w-full sm:w-auto bg-indigo-500 text-indigo-100 px-6 py-2 rounded hover:bg-indigo-600 focus:outline-none cursor-pointer">
+                            <input type="submit" value="Send Password Reset Link" class="w-full sm:w-auto bg-indigo-500 text-indigo-100 px-6 py-2 rounded-full hover:bg-indigo-600 focus:outline-none cursor-pointer">
                         </div>
                     </div>
 

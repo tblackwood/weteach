@@ -19,7 +19,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','trial_ends_at',
+        'name', 'email', 'password','trial_ends_at','auth_type',
     ];
 
     /**
@@ -54,5 +54,33 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function plan(){
         return $this->belongsTo('App\Plan');
+    }
+
+    public function announcements(){
+        return $this->belongsToMany('App\Announcement');
+    }
+
+    public function hasUnreadAnnouncements(){
+        $totalAnnouncements = \App\Announcement::count();
+        $userAnnouncements = $this->announcements()->count();
+        if($totalAnnouncements > $userAnnouncements){
+            return true;
+        }
+        return false;
+    }
+
+    public function unreadAnnouncements(){
+        $announcements = \App\Announcement::orderBy('created_at', 'DESC')->get();
+        $unreadAnnouncements = [];
+        foreach($announcements as $announcement){
+            if( !$this->announcements()->where('id', $announcement->id)->exists() ){
+                array_push($unreadAnnouncements, $announcement);
+            }
+        }
+        return $unreadAnnouncements;
+    }
+
+    public function courses(){
+        return $this->hasMany('App\Course');
     }
 }

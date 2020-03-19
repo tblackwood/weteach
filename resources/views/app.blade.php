@@ -38,6 +38,7 @@
 
 <script src="/js/app.js"></script>
 @yield('javascript')
+
 </body>
 
 </html>
